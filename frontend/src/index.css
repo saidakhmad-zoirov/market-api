@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+/* ---------- Ranglar: to'q ko'k (navy) fon ----------
+   Asosiy aksent — zumrad yashil (tugmalar, narx, eng muhim mahsulot);
+   ikkinchi aksent — issiq amber (kichik belgilar, hover, uchar yulduz).
+   Bitta palitra — mavzu almashtirish yo'q, shuning uchun ranglar aralashib ketmaydi. */
+:root {
+  --bg: #0f1b2d;
+  --bg-2: #13223a;
+  --panel: #172a45;
+  --panel-2: #1d3352;
+  --line: #24395a;
+  --line-strong: #35507a;
+  --ink: #f3f6fb;
+  --muted: #a9b6c9;
+  --faint: #8394ad;
+  --accent: #2fd39a;
+  --accent-ink: #4be3ad; /* aksent rangidagi matn */
+  --on-accent: #06231a;
+  --accent-2: #f5b14a;
+  --accent-2-soft: rgba(245, 177, 74, 0.14);
+  --mint: #18374a; /* kategoriya kartasi hover foni */
+  --sand: #2a2f3a;
+  --glow: rgba(47, 211, 154, 0.3);
+  --tile: #f6f8fb; /* mahsulot kartalari — oq */
+  --tile-ink: #0f1b2d;
+  --tile-muted: #56657c;
+  --tile-line: #e2e8f0;
+  --danger: #ff6b6b;
+  --ok: #4be3ad;
+  --shadow: 0 30px 70px -30px rgba(3, 8, 18, 0.75);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-2-soft: var(--accent-2-soft);
+  --color-tile: var(--tile);
+  --color-tile-ink: var(--tile-ink);
+  --color-tile-muted: var(--tile-muted);
+  --color-tile-line: var(--tile-line);
+  --color-mint: var(--mint);
+  --color-sand: var(--sand);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-soft: var(--shadow);
+}
+
+/* Sahifa asosi QATLAMSIZ yozilgan: tashqi reset (masalan, "body { background: #fff; color: #000 }")
+   qatlamsiz bo'lsa, u har qanday @layer ichidagi qoidadan ustun turadi. Shuning uchun bu yerda. */
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    word-spacing: 0.04em; /* harflar bir-biriga yopishmasin */
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 3px;
+  }
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .panel {
+    @apply rounded-3xl border border-line bg-panel;
+  }
+  .label {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-muted;
+  }
+  .field {
+    @apply w-full rounded-2xl border border-line bg-panel-2 px-4 py-3 text-ink placeholder:text-faint transition;
+  }
+  .field:focus {
+    @apply border-accent-2 outline-none;
+    box-shadow: 0 0 0 4px var(--accent-2-soft);
+  }
+  .field[aria-invalid="true"] {
+    @apply border-danger;
+  }
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm text-muted transition hover:border-line-strong hover:text-ink;
+  }
+  .chip[data-active="true"] {
+    @apply border-transparent bg-ink text-bg;
+  }
+}
+
+/* ---------- Harakatlar ---------- */
+
+/* Sarlavha harflari birma-bir ko'tariladi */
+.split-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em) rotate(4deg);
+  animation: char-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: calc(var(--i) * 28ms + var(--d, 0ms));
+}
+@keyframes char-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Tugma matni hover'da "aylanadi" */
+.roll {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.roll > span {
+  grid-area: 1 / 1;
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.roll > span:last-child {
+  transform: translateY(110%);
+}
+.group:hover .roll > span:first-child,
+.roll-host:hover .roll > span:first-child {
+  transform: translateY(-110%);
+}
+.group:hover .roll > span:last-child,
+.roll-host:hover .roll > span:last-child {
+  transform: none;
+}
+
+/* Scroll paytida ketma-ket ko'tarilish */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.shimmer {
+  background: linear-gradient(100deg, var(--panel-2) 30%, var(--line-strong) 50%, var(--panel-2) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.toast-in {
+  animation: toast-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+
+.page-in {
+  animation: page-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@utility glow-accent {
+  box-shadow:
+    0 0 0 1px var(--glow),
+    0 14px 50px -10px var(--glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .split-char,
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
